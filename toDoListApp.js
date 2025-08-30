@@ -19,18 +19,16 @@ function addTaskItem() {
         return;
     } else {
         newTaskItem.innerHTML =
-            `
-            <section>
-            <input type="checkbox">
-            <span>
-            ${taskInput.value}
-            </span>
-            </section>
-            <section>
-            <button class='editBtn'>Edit</button>
-            <button class='delBtn'>Del</button>
-            </section>
-        `;
+            `<section>
+             <input type="checkbox">
+             <span></span>
+             </section>
+             <section>
+             <button class="editBtn">Edit</button>
+             <button class="delBtn">Del</button>
+             </section>`;
+
+        newTaskItem.querySelector('span').textContent = taskInput.value;
         taskList.appendChild(newTaskItem);
         taskInput.value = '';
         console.log('Task Added');
