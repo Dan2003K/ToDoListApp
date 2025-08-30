@@ -113,7 +113,8 @@ li section button>img {
 
 #CompletedTaskCounter {
     position: absolute;
-    bottom: 20px;
+    top: 15px;
+    right: 20px;
     font-size: 1rem;
     color: gray;
 }
