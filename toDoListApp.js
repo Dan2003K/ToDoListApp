@@ -1,72 +1,72 @@
-let taskListContainer = document.querySelector('.container');
-let addTaskBtn = document.querySelector('#addTaskBtn');
-
-// Add Task Button runs addtaskItem function on click
-addTaskBtn.addEventListener('click', addTaskItem);
-
-// Pressing Enter in the input runs addTaskItem()
-taskInput.addEventListener('keydown', e => e.key === "Enter" ? addTaskItem() : null);
-
-/// Add Task Item to the List
-function addTaskItem() {
-    let taskInput = document.querySelector('#taskInput');
-    let taskList = document.querySelector('#taskList');
-    let newTaskItem = document.createElement('li');
-    newTaskItem.classList = "taskItem";
-    if (taskInput.value == '') {
-        document.querySelector('#taskInput').placeholder = "Please enter a task !!!";
-        document.querySelector('#taskInput').style.color = "red";
-        return;
-    } else {
-        newTaskItem.innerHTML =
-            `<section>
-             <input type="checkbox">
-             <span></span>
-             </section>
-             <section>
-             <button class="editBtn">Edit</button>
-             <button class="delBtn">Del</button>
-             </section>`;
-
-        newTaskItem.querySelector('span').textContent = taskInput.value;
-        taskList.appendChild(newTaskItem);
-        taskInput.value = '';
-        console.log('Task Added');
-        document.querySelector('#taskInput').placeholder = "Add a new task...";
-    }
-}
-
-let taskCompleted = document.querySelector('#CompletedTaskCounter');
+/// Cache DOM elements
+const taskListContainer = document.querySelector('.container');
+const taskInput = document.querySelector('#taskInput');
+const addTaskBtn = document.querySelector('#addTaskBtn');
+const taskList = document.querySelector('#taskList');
+const taskCompleted = document.querySelector('#CompletedTaskCounter');
 
 let counter = 0;
 taskCompleted.innerHTML = `Tasks Completed: ${counter}`;
 
-taskList.addEventListener('click', function (e) {
-    // Delete task
+/// Add Task on "Add" Button click or Enter key pressed
+addTaskBtn.addEventListener('click', addTaskItem);
+taskInput.addEventListener('keydown', e => e.key === "Enter" ? addTaskItem() : null);
+
+/// Add New Task Item to the List
+function addTaskItem() {
+    if (taskInput.value.trim() == '') {
+        document.querySelector('#taskInput').placeholder = "Please enter a task !!!";
+        document.querySelector('#taskInput').style.color = "red";
+        return;
+    }
+
+    /// Create new task item
+    const newTaskItem = document.createElement('li');
+    newTaskItem.classList = "taskItem";
+    newTaskItem.innerHTML =
+        `<section>
+         <input type="checkbox">
+         <span></span>
+         </section>
+         <section>
+         <button class="editBtn">Edit</button>
+         <button class="delBtn">Del</button>
+         </section>`;
+
+    /// Insert new task item into the list
+    newTaskItem.querySelector('span').textContent = taskInput.value;
+    taskList.appendChild(newTaskItem);
+    taskInput.value = '';
+    console.log('Task Added');
+
+    /// Reset placeholder
+    document.querySelector('#taskInput').placeholder = "Add a new task...";
+}
+
+/// Handle Delete & Completed toggle in one listener
+taskList.addEventListener('click', e => {
+    const li = e.target.closest('li');
+    if (!li) return; // clicked outside <li>
+
+    /// Delete Task
     if (e.target.classList.contains('delBtn')) {
-        const li = e.target.closest('li');
         const checkbox = li.querySelector('input[type="checkbox"]');
-
-        // If the task being deleted was completed, decrement the counter
-        if (checkbox && checkbox.checked) {
-            counter--;
-        }
-
+        if (checkbox?.checked) counter--;
         li.remove();
         console.log('Task Deleted');
-        taskCompleted.innerHTML = `Tasks Completed: ${counter}`;
-        return; // stop further processing
+        updateCounter();
+        return;
     }
 
-    // Completed tasks
+    /// Toggle Completed
     if (e.target.type === 'checkbox') {
-        if (e.target.checked) {
-            counter++;
-            console.log('Task Completed');
-        } else {
-            counter--;
-            console.log('Task Uncompleted');
-        }
-        taskCompleted.innerHTML = `Tasks Completed: ${counter}`;
+        counter += e.target.checked ? 1 : -1;
+        console.log(e.target.checked ? 'Task Completed' : 'Task Uncompleted');
+        updateCounter();
     }
 });
+
+/// Utility: update counter display
+function updateCounter() {
+    taskCompleted.textContent = `Tasks Completed: ${counter}`;
+}
